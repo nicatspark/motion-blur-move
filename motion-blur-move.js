@@ -14,14 +14,14 @@ async function motionBlur(
   } = {}
 ) {
   return new Promise((resolve) => {
-    const easings = easingFactory();
     let start;
+    const easings = easingFactory();
     const elStartPosition = window.getComputedStyle(element);
     const originPos = {
       x: parseInt(elStartPosition.left),
       y: parseInt(elStartPosition.top),
     };
-    // Moition blur.
+    // Motion blur specific.
     let previousX, previousY;
     if (useMotionBlur) initMotionBlur();
     //
@@ -47,18 +47,17 @@ async function motionBlur(
       } else {
         // Movement done.
         if (useMotionBlur) resetMotionBlur();
-        with (element.style) {
-          left = Math.round(parseInt(left)) + 'px';
-          top = Math.round(parseInt(top)) + 'px';
-        }
-        resolve(element);
+        element.style.left = Math.round(parseInt(element.style.left)) + 'px';
+        element.style.top = Math.round(parseInt(element.style.top)) + 'px';
+        resolve({ element });
       }
     }
     window.requestAnimationFrame(step);
 
     function convertOptionalAbsoluteToRelative() {
-      if (yTargetDistancePx + xTargetDistancePx !== 0 || !xTarget || !yTarget)
-        return;
+      const absolutePositionsNotPresent =
+        yTargetDistancePx + xTargetDistancePx !== 0 || !xTarget || !yTarget;
+      if (absolutePositionsNotPresent) return;
       xTargetDistancePx = xTarget - originPos.x;
       yTargetDistancePx = yTarget - originPos.y;
     }
@@ -114,7 +113,7 @@ async function motionBlur(
     }
 
     function easingFactory() {
-      // Add more from https://easings.net/
+      // Visualized at https://easings.net/
       const easeInSine = (x) => 1 - Math.cos((x * Math.PI) / 2);
       const easeOutSine = (x) => Math.sin((x * Math.PI) / 2);
       const easeInOutSine = (x) => (-1 * (Math.cos(Math.PI * x) - 1)) / 2;
@@ -247,15 +246,4 @@ async function motionBlur(
       };
     }
   });
-}
-
-function moveobj() {
-  motionBlur(document.getElementById('moveme'), {
-    durationMs: 200,
-    xTargetDistancePx: 300,
-    applyToggle: true,
-    easing: 'easeInQuad',
-    useMotionBlur: true,
-    blurMultiplier: 2,
-  }).then((el) => console.log('done', el));
 }
