@@ -71,12 +71,13 @@ The function returns a promise when the move is finnished.
 
 ## Gotchas
 
-- The blur wont extend outside the target element borders and the blur effect will not look good. Instead create a invisible wrapper div with enough padding to the visible element for the motion blur effect to spill over outside the visible elements border.
+- The blur wont extend outside the target element borders and then the blur effect will not look good. Instead create a invisible wrapper div with enough padding to the visible element for the motion blur effect to spill over outside the visible elements border.
 - The blur amount is calculated in proportion to the number of pixels moved per time unit. This means that if the element is moving slowly the effect is smaller. If you still want exagerate the effect use the multiplier argument to increase the blur.
 
 ## Todos
 
-- Make the svg from within the function. For now it will not engage the motion blur effect when created implicitly.
-- Look into extending div with a function.
+- Make the function take multiple css properties, possibly on set of in and one out, and let the easing method work those too.
+- Make it accept other units than px for distance.
+- Create the svg implicitly from within the function itself. For now the filter won't work when done this way.
+- Look into extending a div element (or all) with this as a function.
 - Look into making a custom web component that wraps a target element.
-- Make the function take multiple css properties and let the easing method work those.
