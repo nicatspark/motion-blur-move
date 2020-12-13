@@ -43,7 +43,7 @@ async function motionBlur(
       element.style.top = originPos.y + easedProgress.y + 'px';
 
       if (elapsedMs < durationMs) {
-        window.requestAnimationFrame(step);
+        window.requestAnimationFrame(step); // Keep going.
       } else {
         // Movement done.
         if (useMotionBlur) resetMotionBlur();
@@ -52,7 +52,7 @@ async function motionBlur(
         resolve({ element });
       }
     }
-    window.requestAnimationFrame(step);
+    window.requestAnimationFrame(step); // Kicking off.
 
     function convertOptionalAbsoluteToRelative() {
       const absolutePositionsNotPresent =
@@ -144,12 +144,12 @@ async function motionBlur(
           : x < 0.5
           ? Math.pow(2, 20 * x - 10) / 2
           : (2 - Math.pow(2, -20 * x + 10)) / 2;
-      const easeInCirc = (x) => 1 - sqrt(1 - Math.pow(x, 2));
-      const easeOutCirc = (x) => sqrt(1 - Math.pow(x - 1, 2));
+      const easeInCirc = (x) => 1 - Math.sqrt(1 - Math.pow(x, 2));
+      const easeOutCirc = (x) => Math.sqrt(1 - Math.pow(x - 1, 2));
       const easeInOutCirc = (x) =>
         x < 0.5
-          ? (1 - sqrt(1 - Math.pow(2 * x, 2))) / 2
-          : (sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2;
+          ? (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2
+          : (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2;
       const easeInBack = (x) => {
         const c1 = 1.70158;
         const c3 = c1 + 1;
@@ -173,7 +173,7 @@ async function motionBlur(
           ? 0
           : x === 1
           ? 1
-          : -pow(2, 10 * x - 10) * sin((x * 10 - 10.75) * c4);
+          : -Math.pow(2, 10 * x - 10) * Math.sin((x * 10 - 10.75) * c4);
       };
       const easeOutElastic = (x) => {
         const c4 = (2 * Math.PI) / 3;
@@ -181,7 +181,7 @@ async function motionBlur(
           ? 0
           : x === 1
           ? 1
-          : Math.pow(2, -10 * x) * sin((x * 10 - 0.75) * c4) + 1;
+          : Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1;
       };
       const easeInOutElastic = (x) => {
         const c5 = (2 * Math.PI) / 4.5;
@@ -214,7 +214,6 @@ async function motionBlur(
           : (1 + easeOutBounce(2 * x - 1)) / 2;
 
       return {
-        easeOutExpo,
         easeInSine,
         easeOutSine,
         easeInOutSine,
@@ -222,6 +221,8 @@ async function motionBlur(
         easeOutCubic,
         easeInOutCubic,
         easeInQuint,
+        easeOutQuint,
+        easeInOutQuint,
         easeInQuad,
         easeOutQuad,
         easeInOutQuad,
